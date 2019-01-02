@@ -18,7 +18,7 @@
    <input type="submit" value="Submit">
     <input type="reset" value="Clear" />
     </form> 
-   <div>
+<div>
 		<jsp:include page="homeLink.html"></jsp:include>
 	</div>
 </body>
