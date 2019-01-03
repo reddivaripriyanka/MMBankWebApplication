@@ -62,7 +62,7 @@ public class controller extends HttpServlet {
 		int accountNumber=0;
 		switch(path){
 		case "/addAccount.mm":
-			response.sendRedirect("AddAccount.html");
+			response.sendRedirect("AddAccount.jsp");
 			break;
 		case "/createAccount.mm":
 			String name=request.getParameter("aHolderName");
@@ -77,19 +77,18 @@ public class controller extends HttpServlet {
 				
 				break;
 		case "/closeAccount.mm":
-			response.sendRedirect("CloseAccount.html");
+			response.sendRedirect("CloseAccount.jsp");
 			break;
 		case "/deleteAccount.mm":
 			accountNumber=Integer.parseInt(request.getParameter("aNumber"));
 			try {
 				try {
 					boolean result=savingsAccountService.deleteAccount(accountNumber);
-					
 					if(result==true)
 						System.out.println("Succesfully Close Account");
 					else
 						System.out.println("Not update");
-					response.sendRedirect("index.html");
+					response.sendRedirect("getAll.mm");
 				} catch (ClassNotFoundException e) {
 					e.printStackTrace();
 				} catch (AccountNotFoundException e) {
@@ -101,7 +100,7 @@ public class controller extends HttpServlet {
 			break;
 
 		case "/withdrawAmount.mm":
-			response.sendRedirect("Withdraw.html");
+			response.sendRedirect("Withdraw.jsp");
 			break;
 		case "/withdrawAmountInAccount.mm":
 			int accNumber=Integer.parseInt(request.getParameter("aNumber"));
@@ -110,7 +109,7 @@ public class controller extends HttpServlet {
 			try {
 				savingsAccount = savingsAccountService.getAccountById(accNumber);
 				savingsAccountService.withdraw(savingsAccount, withdrawAmount);
-				response.sendRedirect("index.html");
+				response.sendRedirect("getAll.mm");
 				DBUtil.commit();
 			} catch (ClassNotFoundException | SQLException | AccountNotFoundException e) {
 				try {
@@ -128,7 +127,7 @@ public class controller extends HttpServlet {
 			}
 			break;
 		case "/depositAmount.mm":
-			response.sendRedirect("Deposit.html");
+			response.sendRedirect("Deposit.jsp");
 			break;
 		case "/depositAmountInAccount.mm":
 			int aNumber=Integer.parseInt(request.getParameter("accNumber"));
@@ -137,7 +136,7 @@ public class controller extends HttpServlet {
 			try {
 				savingAccount = savingsAccountService.getAccountById(aNumber);
 				savingsAccountService.deposit(savingAccount, dAmount);
-				response.sendRedirect("index.html");
+				response.sendRedirect("getAll.mm");
 				DBUtil.commit();
 			} catch (ClassNotFoundException | SQLException e) {
 				e.printStackTrace();
@@ -155,7 +154,7 @@ public class controller extends HttpServlet {
 			}
 			break;
 		case "/fundTransfer.mm":
-			response.sendRedirect("fundTransfer.html");
+			response.sendRedirect("fundTransfer.jsp");
 			break;
 			
 		case "/fundTrans.mm":
@@ -166,7 +165,7 @@ public class controller extends HttpServlet {
 				SavingsAccount senderSavingsAccount = savingsAccountService.getAccountById(senderAccountNumber);
 				SavingsAccount receiverSavingsAccount = savingsAccountService.getAccountById(receiverAccountNumber);
 				savingsAccountService.fundTransfer(senderSavingsAccount, receiverSavingsAccount, transferAmount);
-				response.sendRedirect("index.html");
+				response.sendRedirect("getAll.mm");
 			} catch (ClassNotFoundException | SQLException e) {
 				e.printStackTrace();
 			} catch (Exception e) {
@@ -174,7 +173,7 @@ public class controller extends HttpServlet {
 			}
 			break;
 		case "/getCurreneBalance.mm":
-			response.sendRedirect("CurrentBalance.html");
+			response.sendRedirect("CurrentBalance.jsp");
 			break;
 		case "/checkCurrentBalance.mm":
 			int accBalance=Integer.parseInt(request.getParameter("aNumber"));
@@ -188,7 +187,7 @@ public class controller extends HttpServlet {
 			
 			break;
 		case "/searchForm.mm":
-			response.sendRedirect("SearchForm.html");
+			response.sendRedirect("SearchForm.jsp");
 			break;
 		case "/search.mm":
 			accountNumber = Integer.parseInt(request.getParameter("txtAccountNumber"));
@@ -320,9 +319,38 @@ public class controller extends HttpServlet {
 			
 		 
 		break;
-			
-
+	case "/updateAccount.mm":
+		response.sendRedirect("Update.jsp");
+		break;
+	case "/update.mm":
+		int accountBal = Integer.parseInt(request.getParameter("aNumber"));
+		try {
+			SavingsAccount accountUpdate = savingsAccountService.getAccountById(accountBal);
+			request.setAttribute("accounts", accountUpdate);
+			dispatcher = request.getRequestDispatcher("UpdateDetails.jsp");
+			dispatcher.forward(request, response);
+		} catch (ClassNotFoundException | SQLException| AccountNotFoundException e) {
+			e.printStackTrace();
 		}
+			break;
+	case "/updateAcc.mm":
+		int accountId = Integer.parseInt(request.getParameter("txtNum"));
+		SavingsAccount accountUpdate;
+		try {
+			accountUpdate = savingsAccountService.getAccountById(accountId);
+			String accHName = request.getParameter("txtAccHn");
+			accountUpdate.getBankAccount().setAccountHolderName(accHName);
+			double accBal = Double.parseDouble(request.getParameter("txtBal"));
+			boolean isSalary = request.getParameter("rdSal").equalsIgnoreCase("no")?false:true;
+			accountUpdate.setSalary(isSalary);
+			savingsAccountService.updateAccount(accountUpdate);
+			response.sendRedirect("getAll.mm");
+		} catch (ClassNotFoundException | SQLException
+				| AccountNotFoundException e) {
+			e.printStackTrace();
+		}
+			break;
+	}	
 	}
 	protected void doPost(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {

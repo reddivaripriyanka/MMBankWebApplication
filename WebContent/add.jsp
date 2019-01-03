@@ -19,7 +19,7 @@
     <input type="reset" value="Clear" />
     </form> 
 <div>
-		<jsp:include page="homeLink.html"></jsp:include>
+		<jsp:include page="homeLink.jsp"></jsp:include>
 	</div>
 </body>
 </html>

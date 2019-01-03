@@ -10,5 +10,8 @@
 		<br /> <input type="submit" value="Submit">
 
 	</form>
+	  <div>
+		<jsp:include page="homeLink.jsp"></jsp:include>
+	</div>
 </body>
 </html>

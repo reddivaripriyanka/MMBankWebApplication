@@ -13,5 +13,8 @@
      <input type="reset" value="Clear" />
   <br>
   </form>
+    <div>
+		<jsp:include page="homeLink.jsp"></jsp:include>
+	</div>
 </body>
 </html>
